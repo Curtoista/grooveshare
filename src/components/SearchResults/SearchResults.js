@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 
+
+
 const SearchResults = () => {
 
-    return (
-        <div>
+    const [results, setResults] = useState([]);
 
-        </div>
+    return (
+        <li></li>
     );
 };
 
