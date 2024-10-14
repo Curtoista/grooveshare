@@ -1,13 +1,13 @@
-const yelpKey = 'DQH2Bbchmuo33M6B-qivsJ9IHZL0HoEUDFUXTXfR1cNc_DZr2b2O_t5KjrEIaO7gJrMUAvDrTCCor60x5AFA5_KqMP0fq87OXwGD5cZl29UVOGq-GTIyMUKzE2zgZnYx';
-const yelpURL = 'https://api.yelp.com/v3/businesses/search';
+const spotifyKey = '9c6878c94a22495f8ba95a94cf0ad358';
+const redirectURL = 'http://localhost:3000/';
 
 const Spotify = {
-    search(term, location, sortBy) {
+    search(searchTerm) {
       return fetch(
-        `https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`,
+        `${redirectURL}?search_term=${searchTerm}`,
         {
           headers: {
-            Authorization: `Bearer ${yelpKey}`,
+            Authorization: `Bearer ${spotifyKey}`,
           },
         }
       )
@@ -15,18 +15,12 @@ const Spotify = {
           return response.json();
         })
         .then((jsonResponse) => {
-          if (jsonResponse.businesses) {
-            return jsonResponse.businesses.map((business) => ({
-              id: business.id,
-              imageSrc: business.image_url,
-              name: business.name,
-              address: business.location.address1,
-              city: business.location.city,
-              state: business.location.state,
-              zipCode: business.location.zip_code,
-              category: business.categories[0].title,
-              rating: business.rating,
-              reviewCount: business.review_count,
+          if (jsonResponse.tracks) {
+            return jsonResponse.businesses.map((track) => ({
+              id:track.id,
+              name:track.name,
+              artist:track.artist,
+              album:track.review_count,
             }));
           }
         });
@@ -48,16 +42,16 @@ const Spotify = {
 //         if (response.ok) {
 //           const jsonResponse = await response.json();
 //           return jsonResponse.businesses.map((business) => ({
-//             id: business.id,
-//             imageSrc: business.image_url,
-//             name: business.name,
-//             address: business.location.address1,
-//             city: business.location.city,
-//             state: business.location.state,
-//             zipCode: business.location.zip_code,
-//             category: business.categories[0].title,
-//             rating: business.rating,
-//             reviewCount: business.review_count,
+//             id:track.id,
+//             imageSrc:track.image_url,
+//             name:track.name,
+//             address:track.location.address1,
+//             city:track.location.city,
+//             state:track.location.state,
+//             zipCode:track.location.zip_code,
+//             category:track.categories[0].title,
+//             rating:track.rating,
+//             reviewCount:track.review_count,
 //           }));
 //         }
 //       } catch (error) {
@@ -86,16 +80,16 @@ const Spotify = {
 //         .then((jsonResponse) => {
 //           if (jsonResponse.businesses) {
 //             return jsonResponse.businesses.map((business) => ({
-//               id: business.id,
-//               imageSrc: business.image_url,
-//               name: business.name,
-//               address: business.location.address1,
-//               city: business.location.city,
-//               state: business.location.state,
-//               zipCode: business.location.zip_code,
-//               category: business.categories[0].title,
-//               rating: business.rating,
-//               reviewCount: business.review_count,
+//               id:track.id,
+//               imageSrc:track.image_url,
+//               name:track.name,
+//               address:track.location.address1,
+//               city:track.location.city,
+//               state:track.location.state,
+//               zipCode:track.location.zip_code,
+//               category:track.categories[0].title,
+//               rating:track.rating,
+//               reviewCount:track.review_count,
 //             }));
 //           }
 //         });
