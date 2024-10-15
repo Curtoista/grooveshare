@@ -1,97 +1,48 @@
-const spotifyKey = '9c6878c94a22495f8ba95a94cf0ad358';
-const redirectURL = 'http://localhost:3000/';
+const clientId = "9c6878c94a22495f8ba95a94cf0ad358";
+const spotifyUrl = "https://api.spotify.com/v1/search?type=track";
+
+const generateRandomString = (length) => {
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const values = crypto.getRandomValues(new Uint8Array(length));
+  return values.reduce((acc, x) => acc + possible[x % possible.length], "");
+};
+
+const sha256 = async (plain) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return window.crypto.subtle.digest("SHA-256", data);
+};
+
+const base64encode = (input) => {
+  return btoa(String.fromCharCode(...new Uint8Array(input)))
+    .replace(/=/g, "")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_");
+};
 
 const Spotify = {
-    search(searchTerm) {
-      return fetch(
-        `${redirectURL}?search_term=${searchTerm}`,
-        {
-          headers: {
-            Authorization: `Bearer ${spotifyKey}`,
-          },
+  accessToken() {},
+  search(searchTerm) {
+    return fetch(`${spotifyUrl}?q=${searchTerm}`, {
+      headers: {
+        Authorization: `Bearer ${clientId}`,
+      },
+    })
+      .then((response) => {
+        console.log("response", response);
+        return response.json();
+      })
+      .then((jsonResponse) => {
+        console.log("jsonResponse", jsonResponse);
+        if (jsonResponse.tracks) {
+          return jsonResponse.businesses.map((track) => ({
+            id: track.id,
+            name: track.name,
+            artist: track.artist,
+            album: track.review_count,
+          }));
         }
-      )
-        .then((response) => {
-          return response.json();
-        })
-        .then((jsonResponse) => {
-          if (jsonResponse.tracks) {
-            return jsonResponse.businesses.map((track) => ({
-              id:track.id,
-              name:track.name,
-              artist:track.artist,
-              album:track.review_count,
-            }));
-          }
-        });
-    },
-  };
-
-
-// const YelpSearch =  async (searchTerm, searchLocation, sortOption) => {
-//     const searchParams = `?term=${searchTerm}&location=${searchLocation}&sort_by=${sortOption}`;
-//     const endpoint = `${yelpURL}${searchParams}`;
-
-//     try {
-//         const response = await fetch(endpoint, 
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${yelpKey}`,
-//                 }
-//             });
-//         if (response.ok) {
-//           const jsonResponse = await response.json();
-//           return jsonResponse.businesses.map((business) => ({
-//             id:track.id,
-//             imageSrc:track.image_url,
-//             name:track.name,
-//             address:track.location.address1,
-//             city:track.location.city,
-//             state:track.location.state,
-//             zipCode:track.location.zip_code,
-//             category:track.categories[0].title,
-//             rating:track.rating,
-//             reviewCount:track.review_count,
-//           }));
-//         }
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     };
-
-    export default Spotify;
- 
-
-
-
-// const Yelp = {
-//     search(term, location, sortBy) {
-//       return fetch(
-//         `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${yelpKey}`,
-//           },
-//         }
-//       )
-//         .then((response) => {
-//           return response.json();
-//         })
-//         .then((jsonResponse) => {
-//           if (jsonResponse.businesses) {
-//             return jsonResponse.businesses.map((business) => ({
-//               id:track.id,
-//               imageSrc:track.image_url,
-//               name:track.name,
-//               address:track.location.address1,
-//               city:track.location.city,
-//               state:track.location.state,
-//               zipCode:track.location.zip_code,
-//               category:track.categories[0].title,
-//               rating:track.rating,
-//               reviewCount:track.review_count,
-//             }));
-//           }
-//         });
-//     },
-//   };
+      });
+  },
+};
