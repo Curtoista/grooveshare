@@ -1,31 +1,38 @@
 import React from "react";
+// import Spotify from "../../util/Spotify/Spotify";
 
-const SearchBar = ({ setHasSearched, setSearchTerm, searchTerm, handleSearch }) => {
+const SearchBar = ({
+  setHasSearched,
+  setSearchTerm,
+  searchTerm,
+  handleSearch,
+}) => {
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
+    // Spotify.search(event.target.value);
   };
 
   return (
-    <form 
-      onSubmit={(e) => { 
+    <form
+      onSubmit={(e) => {
         e.preventDefault();
-        handleSearch();  // Call handleSearch when form is submitted
-      }} 
-      className="bg-white p-6 rounded-lg shadow-lg w-96"
+        handleSearch(); // Call handleSearch when form is submitted
+      }}
+      className="p-6 bg-white rounded-lg shadow-lg w-96"
     >
       <div className="mb-4">
-        <input 
+        <input
           type="text"
           placeholder="Search Song Title"
           value={searchTerm}
           onChange={handleChange}
-          className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div>
-        <button 
-          type="submit" 
-          className="bg-blue-500 text-white rounded-lg py-2 px-4 w-full hover:bg-blue-600 transition duration-200"
+        <button
+          type="submit"
+          className="w-full px-4 py-2 text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600"
         >
           Search
         </button>

@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 
-
-
 const SearchResults = () => {
+  const [results, setResults] = useState([]);
 
-    const [results, setResults] = useState([]);
-
-    return (
-        <li></li>
-    );
+  return <li></li>;
 };
 
 export default SearchResults;
