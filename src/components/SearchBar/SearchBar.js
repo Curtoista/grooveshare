@@ -1,5 +1,5 @@
 import React from "react";
-// import Spotify from "../../util/Spotify/Spotify";
+import { searchTracks } from "../../util/searchTracks";
 
 const SearchBar = ({
   setHasSearched,
@@ -9,7 +9,7 @@ const SearchBar = ({
 }) => {
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
-    // Spotify.search(event.target.value);
+    searchTracks(event.target.value);
   };
 
   return (

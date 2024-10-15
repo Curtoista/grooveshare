@@ -1,6 +1,7 @@
 export async function redirectToSpotifyAuthorize() {
   const authorizationEndpoint = "https://accounts.spotify.com/authorize";
-  const scope = "user-read-private user-read-email";
+  const scope =
+    "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-recently-played user-top-read";
   const redirectUrl = "http://localhost:3000/";
   const clientId = "9c6878c94a22495f8ba95a94cf0ad358";
 

@@ -18,15 +18,17 @@ export const currentToken = {
     return localStorage.getItem("expires") || null;
   },
 
-  save: function (response: AuthResponse) {
-    const { access_token, refresh_token, expires_in } = response;
-    console.log("Saving token", response);
-    localStorage.setItem("access_token", access_token);
-    localStorage.setItem("refresh_token", refresh_token);
-    // localStorage.setItem("expires_in", expires_in.toString());
+  save: async function (response: Promise<AuthResponse>) {
+    response.then((result) => {
+      const { access_token, refresh_token, expires_in } = result;
+      console.log("Saving token", result);
+      localStorage.setItem("access_token", access_token);
+      localStorage.setItem("refresh_token", refresh_token);
+      localStorage.setItem("expires_in", `${expires_in}`);
 
-    const now = new Date();
-    // const expiry = new Date(now.getTime() + expires_in * 1000);
-    // localStorage.setItem("expires", expiry.toString());
+      const now = new Date();
+      const expiry = new Date(now.getTime() + expires_in * 1000);
+      localStorage.setItem("expires", expiry.toString());
+    });
   },
 };
