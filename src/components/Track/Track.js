@@ -73,4 +73,4 @@ const TrackList = ({ searchTerm, addToPlaylist }) => {
   );
 };
 
-export default TrackList;
+

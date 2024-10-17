@@ -1,4 +1,4 @@
-// Soptify API Calls
+// Spotify API Calls
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
 const redirectUrl = "http://localhost:3000/";
 const clientId = "9c6878c94a22495f8ba95a94cf0ad358";

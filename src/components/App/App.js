@@ -6,18 +6,17 @@ import Login from "../Login/Login";
 import { currentToken } from "../../util/currentToken";
 import { getToken } from "../../util/getToken";
 
-// AQAxNFKINLLtFt7y_BUyCbYim1hBPRxdlE1kW4QMgT9IYeVpjSGK7ggKvci8CbnsrtoFaU5zpypu6JE2ymhkeC9MQw-yS9v-azJU3wHXiPB6rNS4FvdgJSmRhAgCKtO2KqHkDM_wfJNKxNd0dIhuk9-F-ulkjpeUQXDxq0Z9aQRvS0vEwR69Ddig9IETqmldZ7bpQTRaFOL1a6oy1VV-wqYUEjnHXPgBFqIS7WgHTZc15ierbRz3SSj0XYuubk7P5vF8tTzIrOhDb9iW4VYIw3M
 const App = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [playlist, setPlaylist] = useState([]); // New state for Playlist
+  const [playlist, setPlaylist] = useState([]); // State for Playlist
+  const [filteredTracks, setFilteredTracks] = useState([]);
 
   useEffect(() => {
     // On page load, try to fetch auth code from current browser search URL
     const args = new URLSearchParams(window.location.search);
     const code = args.get("code");
 
-    // If we find a code, we're in a callback, do a token exchange
     if (code) {
       const token = getToken(code);
       currentToken.save(token);
@@ -25,14 +24,14 @@ const App = () => {
       // Remove code from URL so we can refresh correctly.
       const url = new URL(window.location.href);
       url.searchParams.delete("code");
-
       const updatedUrl = url.search ? url.href : url.href.replace("?", "");
       window.history.replaceState({}, document.title, updatedUrl);
     }
   }, []);
 
   // Function to handle the actual search submission
-  const handleSearch = () => {
+  const handleSearch = (filteredTracks) => {
+    setFilteredTracks(filteredTracks);
     if (searchTerm.trim() !== "") {
       setHasSearched(true); // Set hasSearched only when search term is not empty
     } else {
@@ -43,6 +42,22 @@ const App = () => {
   // Function to add a track to the playlist
   const addToPlaylist = (track) => {
     setPlaylist((prevPlaylist) => [...prevPlaylist, track]);
+  };
+
+  // Function to remove one instance of a track from the playlist
+  const removeFromPlaylist = (trackToRemove) => {
+    setPlaylist((prevPlaylist) => {
+      const trackIndex = prevPlaylist.findIndex(
+        (track) => track.id === trackToRemove.id
+      );
+      if (trackIndex !== -1) {
+        // Create a new array without mutating the original playlist state
+        const newPlaylist = [...prevPlaylist];
+        newPlaylist.splice(trackIndex, 1); // Remove only the first match
+        return newPlaylist;
+      }
+      return prevPlaylist;
+    });
   };
 
   return (
@@ -58,7 +73,9 @@ const App = () => {
           setSearchTerm={setSearchTerm}
           searchTerm={searchTerm}
           handleSearch={handleSearch}
+          filteredTracks={filteredTracks}
         />
+
         {/* Flexbox container to render TrackList and Playlist side by side */}
         {hasSearched && searchTerm.trim() !== "" && (
           <div className="flex items-start justify-between flex-grow w-full mt-4">
@@ -67,10 +84,14 @@ const App = () => {
               <TrackList
                 searchTerm={searchTerm}
                 addToPlaylist={addToPlaylist}
+                filteredTracks={filteredTracks}
               />
             </div>
             <div className="w-2/5 min-h-screen pl-4">
-              <Playlist playlist={playlist} />
+              <Playlist
+                playlist={playlist}
+                removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist
+              />
             </div>
           </div>
         )}
