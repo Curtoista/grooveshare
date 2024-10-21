@@ -7,6 +7,7 @@ const tracks = [];
 
 // Track component, receives individual track and addToPlaylist function
 const Track = ({ track, addToPlaylist }) => {
+    // console.log(track);
     const { name, artist, album } = track; // Assuming the track object has these fields
   
     return (

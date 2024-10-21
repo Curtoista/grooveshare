@@ -3,7 +3,8 @@ import { currentToken } from "./currentToken";
 type TrackResponse = {
   id: string;
   name: string;
-  artist: string;
+  artists: any;
+  album: any
   review_count: number;
 };
 
@@ -25,8 +26,8 @@ export const searchTracks = (searchTerm: string) => {
         return jsonResponse.tracks.items.map((track: TrackResponse) => ({
           id: track.id,
           name: track.name,
-          artist: track.artist,
-          album: track.review_count,
+          artists: track.artists[0].name,
+          album: track.album.name,
         }));
       }
     })
