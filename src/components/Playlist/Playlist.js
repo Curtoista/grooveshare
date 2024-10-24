@@ -14,8 +14,11 @@ const Playlist = ({ playlist, removeFromPlaylist }) => {
               className="flex items-center justify-between p-2 border-b border-gray-300"
             >
               <div>
-                <h3 className="text-lg font-semibold">{song.name}</h3>
-                <p className="text-gray-700">{song.artist}</p>
+                <h2 className="text-lg font-semibold">{song.name}</h2>
+                <div>
+                <p className="text-gray-700">{song.artists}</p>
+                <p className="text-gray-700">{song.album}</p>
+                </div>
               </div>
               {/* Remove button */}
               <button

@@ -13,8 +13,8 @@ const Track = ({ track, addToPlaylist }) => {
       <div className="p-4 transition duration-150 ease-in-out border-b border-gray-300 hover:bg-gray-100">
         <h2 className="text-xl font-semibold">{name}</h2>
         <div className="text-gray-700">
-          <p className="text-lg">{artists}</p> {/* Display artist */}
-          <p className="text-lg text-gray-600">{album}</p> {/* Display album */}
+          <p className="text-lg">Artist: {artists}</p> {/* Display artist */}
+          <p className="text-lg text-gray-600">Album: {album}</p> {/* Display album */}
         </div>
         {/* Add to Playlist button */}
         <button
