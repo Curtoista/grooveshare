@@ -20,6 +20,7 @@ const SearchBar = ({
         const tracks = await searchTracks(term); // Assuming searchTracks returns a promise
         handleSearch(tracks); // Pass the fetched tracks to handleSearch
         setHasSearched(true); // Set the search state to true
+        setIsSearching(false); // Reset the searching state
       } catch (error) {
         console.error("Error fetching tracks:", error);
       }

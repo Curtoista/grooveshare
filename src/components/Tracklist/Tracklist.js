@@ -1,7 +1,6 @@
 import React from "react";
 import SearchBar from "../SearchBar/SearchBar";
 
-
 // Sample track data
 const tracks = [];
 
@@ -30,25 +29,23 @@ const Track = ({ track, addToPlaylist }) => {
 
 // TrackList component now properly receives addToPlaylist from App.js
 const TrackList = ({ filteredTracks = [], addToPlaylist }) => {
-    
-    console.log(filteredTracks);
-    
-    return (
-      <div className="w-1/2 mt-4 overflow-hidden bg-white rounded-lg shadow-md">
-        <h2 className="p-4 text-2xl font-bold text-center text-white bg-green-400">
-          Track List
-        </h2>
-        {/* Map through filtered tracks and pass addToPlaylist to each Track component */}
-        {filteredTracks.length > 0 ? (
-          filteredTracks.map((track) => (
-            <Track key={track.id} track={track} addToPlaylist={addToPlaylist} />
-          ))
-        ) : (
-          <p className="text-center p-4">No tracks found.</p>
-        )}
-      </div>
-    );
-  };
-  
+  console.log(filteredTracks);
+
+  return (
+    <div className="w-full mt-4 overflow-hidden bg-white rounded-lg shadow-md">
+      <h2 className="p-4 text-2xl font-bold text-center text-white bg-green-400">
+        Track List
+      </h2>
+      {/* Map through filtered tracks and pass addToPlaylist to each Track component */}
+      {filteredTracks.length > 0 ? (
+        filteredTracks.map((track) => (
+          <Track key={track.id} track={track} addToPlaylist={addToPlaylist} />
+        ))
+      ) : (
+        <p className="p-4 text-center">No tracks found.</p>
+      )}
+    </div>
+  );
+};
 
 export default TrackList;
