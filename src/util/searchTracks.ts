@@ -3,10 +3,19 @@ import { currentToken } from "./currentToken";
 type TrackResponse = {
   id: string;
   name: string;
-  artists: any;
-  album: any
+  artists: ArtistsResponse[];
+  album: AlbumResponse
   review_count: number;
 };
+
+type AlbumResponse = {
+  name: string;
+}
+
+type ArtistsResponse = {
+name: string;
+}
+
 
 export const searchTracks = (searchTerm: string) => {
   const spotifyUrl = "https://api.spotify.com/v1/search";
