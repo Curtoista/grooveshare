@@ -3,9 +3,10 @@ import React from "react";
 const Playlist = ({ playlist, removeFromPlaylist }) => {
   return (
     <div className="w-full mt-4 overflow-hidden bg-white rounded-lg shadow-md">
-      <h2 className="p-4 text-2xl font-bold text-center text-white bg-green-400">
+      {/* <h2 className="p-4 text-2xl font-bold text-center text-white bg-green-400">
         Playlist
-      </h2>
+      </h2> */}
+      <input type="text" id="name" name="name" className="p-4 text-2xl font-bold text-center text-white bg-green-400 w-full placeholder-blue-600" placeholder='New Playlist' size="10" />
       <div className="p-4">
         {playlist.length > 0 ? (
           playlist.map((song, index) => (
@@ -14,7 +15,7 @@ const Playlist = ({ playlist, removeFromPlaylist }) => {
               className="flex items-center justify-between p-2 border-b border-gray-300"
             >
               <div>
-                <h2 className="text-lg font-semibold">{song.name}</h2>
+                <h2 className="text-lg font-semibold text-red-700">{song.name}</h2>
                 <div>
                 <p className="text-gray-700">{song.artists}</p>
                 <p className="text-gray-700">{song.album}</p>

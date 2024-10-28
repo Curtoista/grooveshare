@@ -61,7 +61,7 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col bg-blue-200">
+    <div className="flex flex-col min-h-screen bg-blue-200 bg-">
       <h1 className="w-full p-4 text-6xl font-bold text-center text-white bg-green-400 rounded-lg shadow-lg">
         GrooveShare
       </h1>
