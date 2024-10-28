@@ -6,6 +6,7 @@ type TrackResponse = {
   artists: ArtistsResponse[];
   album: AlbumResponse;
   review_count: number;
+  uri: string;
 };
 
 type AlbumResponse = {
@@ -44,7 +45,9 @@ export const searchTracks = (searchTerm: string) => {
           name: track.name,
           artists: track.artists[0].name,
           album: track.album.name,
-          images: track.album.images[0]
+          images: track.album.images[0],
+          uri: track.uri
+
         }));
       }
     })

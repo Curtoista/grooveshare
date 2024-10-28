@@ -11,6 +11,8 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [playlist, setPlaylist] = useState([]); // State for Playlist
   const [filteredTracks, setFilteredTracks] = useState([]);
+  const [playlistTitle, setPlaylistTitle] = useState("");
+  const [playlistUriArray, setPlaylistUriArray] = useState([]);
 
   useEffect(() => {
     // On page load, try to fetch auth code from current browser search URL
@@ -60,8 +62,16 @@ const App = () => {
     });
   };
 
+  // Effect to update playlistUriArray whenever playlist changes
+  useEffect(() => {
+    console.log("Current Playlist:", playlist); // Log the current playlist
+    const uris = playlist.map(song => song.uri); // Map the URIs from the playlist
+    console.log("Mapped URIs:", uris); // Log the mapped URIs
+    setPlaylistUriArray(uris); // Set the playlist URI array
+  }, [playlist]);
+
   return (
-    <div className="flex flex-col min-h-screen bg-blue-200 bg-">
+    <div className="flex flex-col min-h-screen bg-blue-200">
       <h1 className="w-full p-4 text-6xl font-bold text-center text-white bg-green-400 rounded-lg shadow-lg">
         GrooveShare
       </h1>
@@ -91,6 +101,8 @@ const App = () => {
               <Playlist
                 playlist={playlist}
                 removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist
+                playlistTitle={playlistTitle}
+                setPlaylistTitle={setPlaylistTitle}
               />
             </div>
           </div>
