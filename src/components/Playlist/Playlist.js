@@ -6,7 +6,7 @@ const Playlist = ({ playlist, removeFromPlaylist }) => {
       {/* <h2 className="p-4 text-2xl font-bold text-center text-white bg-green-400">
         Playlist
       </h2> */}
-      <input type="text" id="name" name="name" className="p-4 text-2xl font-bold text-center text-white bg-green-400 w-full placeholder-blue-600" placeholder='New Playlist' size="10" />
+      <input type="text" id="playlist" name="playlist" className="p-4 text-2xl font-bold text-center text-white bg-green-400 w-full placeholder-blue-600" placeholder='New Playlist' size="10" />
       <div className="p-4">
         {playlist.length > 0 ? (
           playlist.map((song, index) => (
