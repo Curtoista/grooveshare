@@ -4,16 +4,23 @@ type TrackResponse = {
   id: string;
   name: string;
   artists: ArtistsResponse[];
-  album: AlbumResponse
+  album: AlbumResponse;
   review_count: number;
 };
 
 type AlbumResponse = {
   name: string;
+  images: Images[]
 }
 
 type ArtistsResponse = {
 name: string;
+}
+
+type Images = {
+  url: string;
+  width: number;
+  height: number;
 }
 
 
@@ -37,6 +44,7 @@ export const searchTracks = (searchTerm: string) => {
           name: track.name,
           artists: track.artists[0].name,
           album: track.album.name,
+          images: track.album.images[0]
         }));
       }
     })
