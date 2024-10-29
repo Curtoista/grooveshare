@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitle }) => {
-  
+
   // Handle input change
   const handleTitleChange = (event) => {
     const newTitle = event.target.value; // Get the current input value
@@ -9,10 +9,11 @@ const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitl
     console.log("Current input value:", newTitle); // Log the input value directly
   };
 
-  // // Update playlistUriArray whenever playlist chang
 
-  // console.log("Current Playlist:", playlist);
-  // console.log(playListUriArray); // Log the current playlist for debugging
+  const savePlaylist = () => {
+
+    console.log(playlist);
+  }
 
   return (
     <div className="w-full mt-4 overflow-hidden bg-white rounded-lg shadow-md">
@@ -27,7 +28,8 @@ const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitl
         onChange={handleTitleChange} // Update state on change
         value={playlistTitle} // Set input value to state
       />
-      
+      <button className="px-6 py-3 text-lg font-semibold text-white bg-green-400 rounded-lg shadow-md hover:bg-green-500 focus:outline-none" onClick={savePlaylist}>Save to Spotify</button>
+
       <div className="p-4">
         {playlist.length > 0 ? (
           playlist.map((song, index) => (
