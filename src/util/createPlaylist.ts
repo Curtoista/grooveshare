@@ -6,7 +6,7 @@ type PlaylistResponseBody = {
   public: boolean;
 };
 
-export const createPlaylist = (userId: string) => {
+export const createPlaylist = (userId: string, playlistTitle:string) => {
   const spotifyUrl = `https://api.spotify.com/v1/users/${userId}/playlists`;
 
   return fetch(spotifyUrl, {
@@ -15,7 +15,7 @@ export const createPlaylist = (userId: string) => {
     },
     method: "POST",
     body: JSON.stringify({
-      name: "My playlist",
+      name: playlistTitle,
       description: "My description",
       public: false,
     }),
@@ -27,6 +27,7 @@ export const createPlaylist = (userId: string) => {
     .then((jsonResponse) => {
       console.log("successfully created playlist");
       console.log("jsonResponse", jsonResponse);
+      return jsonResponse;
     })
     .catch((error) => {
       console.error("Error fetching tracks", error);

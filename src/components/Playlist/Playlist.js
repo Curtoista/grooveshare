@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { getUserProfile } from "../../util/getUserProfile";
 import { createPlaylist } from "../../util/createPlaylist";
+import { addToPlaylist } from "../../util/addToPlaylist";
 
 const Playlist = ({
   playlist,
   removeFromPlaylist,
   playlistTitle,
   setPlaylistTitle,
+  playlistUriArray,
 }) => {
   // Handle input change
   const handleTitleChange = (event) => {
@@ -19,8 +21,9 @@ const Playlist = ({
     getUserProfile().then((user) => {
       console.log(user);
       const userId = user.id;
-      createPlaylist(userId).then((playlist) => {
+      createPlaylist(userId, playlistTitle).then((playlist) => {
         console.log(playlist);
+        addToPlaylist(playlist.id, playlistUriArray);
       });
     });
   };

@@ -103,6 +103,7 @@ const App = () => {
                 removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist
                 playlistTitle={playlistTitle}
                 setPlaylistTitle={setPlaylistTitle}
+                playlistUriArray={playlistUriArray}
               />
             </div>
           </div>
