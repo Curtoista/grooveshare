@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
+import { getUserProfile } from "../../util/getUserProfile";
+import { createPlaylist } from "../../util/createPlaylist";
 
-const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitle }) => {
-
+const Playlist = ({
+  playlist,
+  removeFromPlaylist,
+  playlistTitle,
+  setPlaylistTitle,
+}) => {
   // Handle input change
   const handleTitleChange = (event) => {
     const newTitle = event.target.value; // Get the current input value
@@ -9,11 +15,15 @@ const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitl
     console.log("Current input value:", newTitle); // Log the input value directly
   };
 
-
   const savePlaylist = () => {
-
-    console.log(playlist);
-  }
+    getUserProfile().then((user) => {
+      console.log(user);
+      const userId = user.id;
+      createPlaylist(userId).then((playlist) => {
+        console.log(playlist);
+      });
+    });
+  };
 
   return (
     <div className="w-full mt-4 overflow-hidden bg-white rounded-lg shadow-md">
@@ -22,22 +32,29 @@ const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitl
         type="text"
         id="playlist"
         name="playlist"
-        className="p-4 text-2xl font-bold text-center text-white bg-green-400 w-full placeholder-blue-600"
+        className="w-full p-4 text-2xl font-bold text-center text-white placeholder-blue-600 bg-green-400"
         placeholder="New Playlist"
         size="10"
         onChange={handleTitleChange} // Update state on change
         value={playlistTitle} // Set input value to state
       />
-      <button className="px-6 py-3 text-lg font-semibold text-white bg-green-400 rounded-lg shadow-md hover:bg-green-500 focus:outline-none" onClick={savePlaylist}>Save to Spotify</button>
+      <button
+        className="px-6 py-3 text-lg font-semibold text-white bg-green-400 rounded-lg shadow-md hover:bg-green-500 focus:outline-none"
+        onClick={savePlaylist}
+      >
+        Save to Spotify
+      </button>
 
       <div className="p-4">
         {playlist.length > 0 ? (
           playlist.map((song, index) => (
             <div
               key={index}
-              className="relative flex items-center justify-between p-4 border-b border-gray-300 hover:bg-gray-100 transition duration-150"
+              className="relative flex items-center justify-between p-4 transition duration-150 border-b border-gray-300 hover:bg-gray-100"
               style={{
-                backgroundImage: song.images ? `url(${song.images.url})` : "none",
+                backgroundImage: song.images
+                  ? `url(${song.images.url})`
+                  : "none",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
@@ -47,10 +64,16 @@ const Playlist = ({ playlist, removeFromPlaylist, playlistTitle, setPlaylistTitl
 
               {/* Song Details */}
               <div className="relative z-10 text-white">
-                <h2 className="text-lg font-semibold">{song.name || "Unknown Track"}</h2>
+                <h2 className="text-lg font-semibold">
+                  {song.name || "Unknown Track"}
+                </h2>
                 <div>
-                  <p className="text-gray-300">{song.artists || "Unknown Artist"}</p>
-                  <p className="text-gray-300">{song.album || "Unknown Album"}</p>
+                  <p className="text-gray-300">
+                    {song.artists || "Unknown Artist"}
+                  </p>
+                  <p className="text-gray-300">
+                    {song.album || "Unknown Album"}
+                  </p>
                 </div>
               </div>
 
