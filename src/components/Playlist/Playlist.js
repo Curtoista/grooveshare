@@ -41,16 +41,18 @@ const Playlist = ({
         onChange={handleTitleChange} // Update state on change
         value={playlistTitle} // Set input value to state
       />
-      <div className="flex justify-center items-center mt-4 mb-2"> {/* Changed my-4 to mb-2 */}
-        <button
-          className="px-10 py-4 text-base font-medium text-white bg-green-400 rounded-md shadow-sm hover:bg-green-500 focus:outline-none transform transition duration-150 ease-in-out active:scale-95"
-          onClick={savePlaylist}
-        >
-          Save to Spotify
-        </button>
-      </div>
 
-
+      {/* Conditionally render the Save button */}
+      {playlist.length > 0 && (
+        <div className="flex justify-center items-center mb-0">
+          <button
+            className="px-10 py-3 mt-3 text-base font-medium text-white bg-green-400 rounded-md shadow-sm hover:bg-green-500 focus:outline-none transform transition duration-150 ease-in-out active:scale-95"
+            onClick={savePlaylist}
+          >
+            Save to Spotify
+          </button>
+        </div>
+      )}
 
       <div className="p-4">
         {playlist.length > 0 ? (
