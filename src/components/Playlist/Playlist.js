@@ -23,14 +23,14 @@ const Playlist = ({
       createPlaylist(userId, playlistTitle).then((playlist) => {
         addToPlaylist(playlist.id, playlistUriArray);
         toast.success("Playlist saved to Spotify successfully!", {
-          position: "bottom-center", // Change position here
-          autoClose: 3000, // Duration before it closes (in ms)
+          position: "bottom-center",
+          autoClose: 3000,
           style: {
-            backgroundColor: 'white', // Custom background color
-            color: 'black', // Custom text color
-            fontSize: '16px', // Custom font size
-            borderRadius: '8px', // Custom border radius
-            padding: '10px', // Custom padding
+            backgroundColor: 'white',
+            color: 'black',
+            fontSize: '16px',
+            borderRadius: '8px',
+            padding: '10px',
           },
         });
       });
@@ -98,11 +98,11 @@ const Playlist = ({
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">Your playlist is empty.</p>
+          <p className="text-center text-gray-500">Your playlist is empty. Add some songs!</p>
         )}
       </div>
 
-      <ToastContainer /> {/* Add ToastContainer to your component */}
+      <ToastContainer />
     </div>
   );
 };
