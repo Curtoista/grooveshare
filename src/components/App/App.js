@@ -13,6 +13,8 @@ const App = () => {
   const [filteredTracks, setFilteredTracks] = useState([]);
   const [playlistTitle, setPlaylistTitle] = useState("");
   const [playlistUriArray, setPlaylistUriArray] = useState([]);
+  const [loading, setLoading] = useState(false); // State for loading
+  const [error, setError] = useState(""); // State for error messages
 
   useEffect(() => {
     // On page load, try to fetch auth code from current browser search URL
@@ -20,24 +22,41 @@ const App = () => {
     const code = args.get("code");
 
     if (code) {
-      const token = getToken(code);
-      currentToken.save(token);
+      try {
+        const token = getToken(code);
+        currentToken.save(token);
 
-      // Remove code from URL so we can refresh correctly.
-      const url = new URL(window.location.href);
-      url.searchParams.delete("code");
-      const updatedUrl = url.search ? url.href : url.href.replace("?", "");
-      window.history.replaceState({}, document.title, updatedUrl);
+        // Remove code from URL so we can refresh correctly.
+        const url = new URL(window.location.href);
+        url.searchParams.delete("code");
+        const updatedUrl = url.search ? url.href : url.href.replace("?", "");
+        window.history.replaceState({}, document.title, updatedUrl);
+      } catch (error) {
+        console.error("Error retrieving token:", error);
+        setError("Failed to retrieve authentication token.");
+      }
     }
   }, []);
 
   // Function to handle the actual search submission
-  const handleSearch = (filteredTracks) => {
-    setFilteredTracks(filteredTracks);
-    if (searchTerm.trim() !== "") {
-      setHasSearched(true); // Set hasSearched only when search term is not empty
-    } else {
-      setHasSearched(false); // If the search term is empty, reset the search state
+  const handleSearch = async (filteredTracks) => {
+    setLoading(true); // Start loading
+    setError(""); // Clear any previous error messages
+
+    try {
+      // Simulating a search operation with a timeout
+      // Replace with your actual search logic as needed
+      setFilteredTracks(filteredTracks);
+      if (searchTerm.trim() !== "") {
+        setHasSearched(true); // Set hasSearched only when search term is not empty
+      } else {
+        setHasSearched(false); // If the search term is empty, reset the search state
+      }
+    } catch (err) {
+      console.error("Error during search:", err);
+      setError("An error occurred while searching.");
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -53,7 +72,6 @@ const App = () => {
         (track) => track.id === trackToRemove.id
       );
       if (trackIndex !== -1) {
-        // Create a new array without mutating the original playlist state
         const newPlaylist = [...prevPlaylist];
         newPlaylist.splice(trackIndex, 1); // Remove only the first match
         return newPlaylist;
@@ -86,6 +104,12 @@ const App = () => {
           filteredTracks={filteredTracks}
         />
 
+        {/* Display loading indicator */}
+        {loading && <p className="text-lg text-white">Loading...</p>}
+
+        {/* Display error message */}
+        {error && <p className="text-lg text-red-500">{error}</p>}
+
         {/* Flexbox container to render TrackList and Playlist side by side */}
         {hasSearched && searchTerm.trim() !== "" && (
           <div className="flex items-start justify-between flex-grow w-full mt-4">
@@ -96,8 +120,12 @@ const App = () => {
                 addToPlaylist={addToPlaylist}
                 filteredTracks={filteredTracks}
               />
+              {/* Display a message if no tracks are found */}
+              {filteredTracks.length === 0 && !loading && (
+                <p className="text-lg text-gray-500">No tracks found for "{searchTerm}".</p>
+              )}
             </div>
-            <div className="w-2/5 min-h-screen pl-4">
+            <div className="w-2/5 min-h-screen pl-4 sticky top-0">
               <Playlist
                 playlist={playlist}
                 removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist

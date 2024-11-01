@@ -8,27 +8,51 @@ const SearchBar = ({
   handleSearch,
 }) => {
   const [isSearching, setIsSearching] = useState(false);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
-  const handleChange = async (event) => {
+  const handleChange = (event) => {
     const term = event.target.value;
     setSearchTerm(term);
 
-    if (term.trim() !== "") {
-      setIsSearching(true); // Set searching to true while waiting for the response
-      try {
-        // Fetch tracks from the API
-        const tracks = await searchTracks(term); // Assuming searchTracks returns a promise
-        handleSearch(tracks); // Pass the fetched tracks to handleSearch
-        setHasSearched(true); // Set the search state to true
-        setIsSearching(false); // Reset the searching state
-      } catch (error) {
-        console.error("Error fetching tracks:", error);
-      }
-    } else {
-      setIsSearching(false); // If no term, reset the searching state
-      handleSearch([]); // Pass an empty array when there's no search term
-      setHasSearched(false); // Reset search state
+    // Clear previous debounce timeout
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
     }
+
+    // Set a new debounce timeout
+    const timeoutId = setTimeout(async () => {
+      // Sanitize the input by removing backslashes and trimming whitespace
+      const sanitizedTerm = term.replace(/\\/g, "").trim();
+
+      if (sanitizedTerm !== "") {
+        setIsSearching(true); // Set searching to true while waiting for the response
+        try {
+          // Fetch tracks from the API
+          const tracks = await searchTracks(sanitizedTerm); // Using the sanitized term
+
+          // Check if tracks is valid before calling handleSearch
+          if (Array.isArray(tracks)) {
+            handleSearch(tracks); // Pass the fetched tracks to handleSearch
+          } else {
+            console.warn("Expected an array but received:", tracks);
+            handleSearch([]); // Handle the case where tracks is not an array
+          }
+
+          setHasSearched(true); // Set the search state to true
+        } catch (error) {
+          console.error("Error fetching tracks:", error);
+          handleSearch([]); // Reset search results on error
+        } finally {
+          setIsSearching(false); // Reset the searching state
+        }
+      } else {
+        handleSearch([]); // Pass an empty array when there's no search term
+        setHasSearched(false); // Reset search state
+      }
+    }, 300); // Adjust debounce delay as needed
+
+    // Update the debounce state
+    setDebounceTimeout(timeoutId);
   };
 
   return (

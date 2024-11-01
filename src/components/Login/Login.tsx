@@ -1,8 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { redirectToSpotifyAuthorize } from "../../util/redirectToSpotifyAuthorize";
+import { getUserProfile } from "../../util/getUserProfile"; // Import the new getUserProfile function
+
+// Define a type for the user information
+type UserInfo = {
+  name: string;
+  imageUrl: string;
+} | null;
 
 function Login() {
   const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserInfo>(null); // Use UserInfo type, allow initial null
+
+  // Fetch user information after login
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const data = await getUserProfile(); // Fetch user profile
+        setUserInfo({
+          name: data.display_name,
+          imageUrl: data.images[0]?.url || "", // Use the first profile image if available
+        });
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    // Check if there is a token and fetch user info
+    if (localStorage.getItem("access_token")) {
+      fetchUserInfo();
+    }
+  }, []);
 
   // Click handler for Spotify login
   async function loginWithSpotifyClick() {
@@ -23,13 +51,24 @@ function Login() {
       </h1>
       <button
         id="login-button"
-        onClick={loginWithSpotifyClick}
-        className={`px-6 py-3 text-lg font-semibold text-white bg-green-400 rounded-lg shadow-md hover:bg-green-500 focus:outline-none ${
+        onClick={userInfo ? undefined : loginWithSpotifyClick} // Disable click if user is already logged in
+        className={`flex items-center justify-center min-w-[300px] min-h-[50px] px- py-3 text-lg font-semibold text-white bg-green-400 rounded-lg shadow-md hover:bg-green-500 focus:outline-none ${
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={isLoading}
       >
-        {isLoading ? "Logging in..." : "Log in with Spotify"}
+        {userInfo ? (
+          <>
+            <img
+              src={userInfo.imageUrl}
+              alt="User profile"
+              className="w-10 h-10 rounded-full mr-2" // Profile image styling
+            />
+            <span>{`${userInfo.name}`}</span>
+          </>
+        ) : (
+          "Log in with Spotify"
+        )}
       </button>
     </div>
   );
