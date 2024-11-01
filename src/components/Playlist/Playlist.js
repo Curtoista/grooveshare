@@ -1,4 +1,6 @@
 import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { getUserProfile } from "../../util/getUserProfile";
 import { createPlaylist } from "../../util/createPlaylist";
 import { addToPlaylist } from "../../util/addToPlaylist";
@@ -13,16 +15,24 @@ const Playlist = ({
   const handleTitleChange = (event) => {
     const newTitle = event.target.value;
     setPlaylistTitle(newTitle);
-    console.log("Current input value:", newTitle);
   };
 
   const savePlaylist = () => {
     getUserProfile().then((user) => {
-      console.log(user);
       const userId = user.id;
       createPlaylist(userId, playlistTitle).then((playlist) => {
-        console.log(playlist);
         addToPlaylist(playlist.id, playlistUriArray);
+        toast.success("Playlist saved to Spotify successfully!", {
+          position: "bottom-center", // Change position here
+          autoClose: 3000, // Duration before it closes (in ms)
+          style: {
+            backgroundColor: 'white', // Custom background color
+            color: 'black', // Custom text color
+            fontSize: '16px', // Custom font size
+            borderRadius: '8px', // Custom border radius
+            padding: '10px', // Custom padding
+          },
+        });
       });
     });
   };
@@ -51,8 +61,7 @@ const Playlist = ({
         </div>
       )}
 
-      {/* Increased height for the playlist container */}
-      <div className="max-h-[40rem] p-4 overflow-y-auto"> {/* Set max height to 40rem */}
+      <div className="max-h-[40rem] p-4 overflow-y-auto">
         {playlist.length > 0 ? (
           playlist.map((song) => (
             <div
@@ -92,6 +101,8 @@ const Playlist = ({
           <p className="text-center text-gray-500">Your playlist is empty.</p>
         )}
       </div>
+
+      <ToastContainer /> {/* Add ToastContainer to your component */}
     </div>
   );
 };
