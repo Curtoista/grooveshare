@@ -15,6 +15,7 @@ function Login() {
     return storedUserInfo ? JSON.parse(storedUserInfo) : null;
   });
   const [error, setError] = useState<string | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false); // Track if the user has attempted to log in
 
   // Fetch user information and update localStorage
   const fetchUserInfo = async () => {
@@ -41,18 +42,11 @@ function Login() {
     }
   };
 
-  // Attempt to fetch user info if an access token is already present
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token && !userInfo) {
-      fetchUserInfo(); // Fetch only if userInfo is not already set
-    }
-  }, [userInfo]); // Re-run if userInfo changes
-
   // Click handler for Spotify login
   async function loginWithSpotifyClick() {
     setIsLoading(true);
     setError(null); // Clear any existing error
+    setLoggedIn(true); // Set loggedIn to true when the button is clicked
 
     try {
       await redirectToSpotifyAuthorize();
@@ -69,6 +63,13 @@ function Login() {
       setIsLoading(false);
     }
   }
+
+  // Fetch user info if the user has logged in
+  useEffect(() => {
+    if (loggedIn) {
+      fetchUserInfo();
+    }
+  }, [loggedIn]); // Run when loggedIn state changes
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-4">
