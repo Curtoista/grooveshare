@@ -30,7 +30,7 @@ function Login() {
       };
       setUserInfo(fetchedUserInfo);
       localStorage.setItem("user_info", JSON.stringify(fetchedUserInfo)); // Save user info to localStorage
-      setError(null);
+      setError(null); // Clear any previous error
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
       setError("Failed to fetch profile. Please try logging in again.");
@@ -43,15 +43,16 @@ function Login() {
 
   // Attempt to fetch user info if an access token is already present
   useEffect(() => {
-    if (localStorage.getItem("access_token") && !userInfo) {
-      fetchUserInfo();
+    const token = localStorage.getItem("access_token");
+    if (token && !userInfo) {
+      fetchUserInfo(); // Fetch only if userInfo is not already set
     }
-  }, [userInfo]); // Only re-run if userInfo changes
+  }, [userInfo]); // Re-run if userInfo changes
 
   // Click handler for Spotify login
   async function loginWithSpotifyClick() {
     setIsLoading(true);
-    setError(null);
+    setError(null); // Clear any existing error
 
     try {
       await redirectToSpotifyAuthorize();
@@ -71,9 +72,7 @@ function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-4">
-      <h1
-        className="mb-6 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 animate-gradient-x drop-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl"
-      >
+      <h1 className="mb-6 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 animate-gradient-x drop-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl">
         Welcome to GrooveShare
       </h1>
       {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
