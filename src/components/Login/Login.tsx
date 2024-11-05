@@ -46,7 +46,7 @@ function Login() {
     if (localStorage.getItem("access_token") && !userInfo) {
       fetchUserInfo();
     }
-  }, [userInfo]);
+  }, [userInfo]); // Only re-run if userInfo changes
 
   // Click handler for Spotify login
   async function loginWithSpotifyClick() {
