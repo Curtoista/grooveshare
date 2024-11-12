@@ -5,6 +5,7 @@ import Playlist from "../Playlist/Playlist";
 import Login from "../Login/Login";
 import { currentToken } from "../../util/currentToken";
 import { getToken } from "../../util/getToken";
+import Logout from "../Login/Logout";
 
 const App = () => {
   const [hasSearched, setHasSearched] = useState(false);
@@ -83,7 +84,7 @@ const App = () => {
   // Effect to update playlistUriArray whenever playlist changes
   useEffect(() => {
     console.log("Current Playlist:", playlist); // Log the current playlist
-    const uris = playlist.map(song => song.uri); // Map the URIs from the playlist
+    const uris = playlist.map((song) => song.uri); // Map the URIs from the playlist
     console.log("Mapped URIs:", uris); // Log the mapped URIs
     setPlaylistUriArray(uris); // Set the playlist URI array
   }, [playlist]);
@@ -94,6 +95,7 @@ const App = () => {
         GrooveShare
       </h1>
       <Login />
+      <Logout />
       <div className="flex flex-col items-center flex-grow p-4">
         {/* SearchBar always visible */}
         <SearchBar
@@ -122,10 +124,12 @@ const App = () => {
               />
               {/* Display a message if no tracks are found */}
               {filteredTracks.length === 0 && !loading && (
-                <p className="text-lg text-gray-500">No tracks found for "{searchTerm}".</p>
+                <p className="text-lg text-gray-500">
+                  No tracks found for "{searchTerm}".
+                </p>
               )}
             </div>
-            <div className="w-2/5 min-h-screen pl-4 sticky top-0">
+            <div className="sticky top-0 w-2/5 min-h-screen pl-4">
               <Playlist
                 playlist={playlist}
                 removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist
