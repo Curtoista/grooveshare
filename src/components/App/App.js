@@ -132,6 +132,7 @@ const App = () => {
             <div className="sticky top-0 w-2/5 min-h-screen pl-4">
               <Playlist
                 playlist={playlist}
+                setPlaylist={setPlaylist}
                 removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist
                 playlistTitle={playlistTitle}
                 setPlaylistTitle={setPlaylistTitle}
