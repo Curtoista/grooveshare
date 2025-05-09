@@ -18,7 +18,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedTrackUri, setSelectedTrackUri] = useState(null);
-  const accessToken = 'BQADfC5v3gEDcCcUP8tbopRnaTp2fKfuGfNL8eYhLc3BAajdbsYoFxePbm5MHL-a9EP4PXKwvwJj-PrCbHzHY13r1aCG6chJzeV8YPd6KMMEZGGQkCy1nYp3XrrG7pC36neNVwzCuFA9r25a43Dk3fRcF4D3GhLxO3iYQLj16BhaQGgO5BanqWvdVOcyMbxug9_R9mtSpJe6bP2byP5lS3X6F5mmDFsnoJ7PTRs9uVjd4Bg';
+  const accessToken = 'BQDHzM0Ww15GGoLd-2uK7FcTOv0tyyNaRxtA5MOBge6BUW3wyFmr9wyL7E2rcINcIZL3wRq2euCs7vjYjflif7_r_abwrURw9H_xrldojE41aq8-AsR1k6B05hpicr96hLX9dS6xkxrt2YB0QmvlAKUPeymP9MHlQosyrlffuAxTjJ8OZR1cHfqOLejk4xtEiXbbscBziTNLl9iBcDZz6q6nHfkXdfH4_JFa9zJfAvJkA6w';
 
   useEffect(() => {
     const args = new URLSearchParams(window.location.search);
