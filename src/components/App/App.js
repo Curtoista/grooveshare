@@ -1,92 +1,91 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
 import SearchBar from "../SearchBar/SearchBar";
 import TrackList from "../Tracklist/Tracklist";
 import Playlist from "../Playlist/Playlist";
 import Login from "../Login/Login";
+import Logout from "../Login/Logout";
+import WebPlayer from "../WebPlayer/WebPlayer";
 import { currentToken } from "../../util/currentToken";
 import { getToken } from "../../util/getToken";
-import Logout from "../Login/Logout";
 
 const App = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [playlist, setPlaylist] = useState([]); // State for Playlist
+  const [playlist, setPlaylist] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
   const [playlistTitle, setPlaylistTitle] = useState("");
   const [playlistUriArray, setPlaylistUriArray] = useState([]);
-  const [loading, setLoading] = useState(false); // State for loading
-  const [error, setError] = useState(""); // State for error messages
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedTrackUri, setSelectedTrackUri] = useState(null);
+  const accessToken = 'BQADfC5v3gEDcCcUP8tbopRnaTp2fKfuGfNL8eYhLc3BAajdbsYoFxePbm5MHL-a9EP4PXKwvwJj-PrCbHzHY13r1aCG6chJzeV8YPd6KMMEZGGQkCy1nYp3XrrG7pC36neNVwzCuFA9r25a43Dk3fRcF4D3GhLxO3iYQLj16BhaQGgO5BanqWvdVOcyMbxug9_R9mtSpJe6bP2byP5lS3X6F5mmDFsnoJ7PTRs9uVjd4Bg';
 
   useEffect(() => {
-    // On page load, try to fetch auth code from current browser search URL
     const args = new URLSearchParams(window.location.search);
     const code = args.get("code");
 
-    if (code) {
+    const handleAuth = async () => {
       try {
-        const token = getToken(code);
-        currentToken.save(token);
+        if (code) {
+          const token = await getToken(code);
+          currentToken.save(token);
 
-        // Remove code from URL so we can refresh correctly.
-        const url = new URL(window.location.href);
-        url.searchParams.delete("code");
-        const updatedUrl = url.search ? url.href : url.href.replace("?", "");
-        window.history.replaceState({}, document.title, updatedUrl);
-      } catch (error) {
-        console.error("Error retrieving token:", error);
-        setError("Failed to retrieve authentication token.");
+          const url = new URL(window.location.href);
+          url.searchParams.delete("code");
+          const updatedUrl = url.search ? url.href : url.href.replace("?", "");
+          window.history.replaceState({}, document.title, updatedUrl);
+        } else {
+          if (currentToken.isExpired()) {
+            await currentToken.refresh();
+          }
+          const saved = currentToken.access_token;
+          if (saved) {
+            // setAccessToken(saved);
+          }
+        }
+      } catch (err) {
+        console.error("Authentication error:", err);
+        setError("Failed to retrieve or refresh authentication token.");
       }
-    }
+    };
+
+    handleAuth();
   }, []);
 
-  // Function to handle the actual search submission
-  const handleSearch = async (filteredTracks) => {
-    setLoading(true); // Start loading
-    setError(""); // Clear any previous error messages
+  const handleSearch = async (tracks) => {
+    setLoading(true);
+    setError("");
 
     try {
-      // Simulating a search operation with a timeout
-      // Replace with your actual search logic as needed
-      setFilteredTracks(filteredTracks);
-      if (searchTerm.trim() !== "") {
-        setHasSearched(true); // Set hasSearched only when search term is not empty
-      } else {
-        setHasSearched(false); // If the search term is empty, reset the search state
-      }
+      setFilteredTracks(tracks);
+      setHasSearched(searchTerm.trim() !== "");
     } catch (err) {
       console.error("Error during search:", err);
       setError("An error occurred while searching.");
     } finally {
-      setLoading(false); // End loading
+      setLoading(false);
     }
   };
 
-  // Function to add a track to the playlist
   const addToPlaylist = (track) => {
-    setPlaylist((prevPlaylist) => [...prevPlaylist, track]);
+    setPlaylist((prev) => [...prev, track]);
   };
 
-  // Function to remove one instance of a track from the playlist
   const removeFromPlaylist = (trackToRemove) => {
-    setPlaylist((prevPlaylist) => {
-      const trackIndex = prevPlaylist.findIndex(
-        (track) => track.id === trackToRemove.id
-      );
-      if (trackIndex !== -1) {
-        const newPlaylist = [...prevPlaylist];
-        newPlaylist.splice(trackIndex, 1); // Remove only the first match
-        return newPlaylist;
+    setPlaylist((prev) => {
+      const index = prev.findIndex((t) => t.id === trackToRemove.id);
+      if (index !== -1) {
+        const copy = [...prev];
+        copy.splice(index, 1);
+        return copy;
       }
-      return prevPlaylist;
+      return prev;
     });
   };
 
-  // Effect to update playlistUriArray whenever playlist changes
   useEffect(() => {
-    console.log("Current Playlist:", playlist); // Log the current playlist
-    const uris = playlist.map((song) => song.uri); // Map the URIs from the playlist
-    console.log("Mapped URIs:", uris); // Log the mapped URIs
-    setPlaylistUriArray(uris); // Set the playlist URI array
+    const uris = playlist.map((song) => song.uri);
+    setPlaylistUriArray(uris);
   }, [playlist]);
 
   return (
@@ -94,10 +93,11 @@ const App = () => {
       <h1 className="w-full p-4 text-6xl font-bold text-center text-white bg-green-400 rounded-lg shadow-lg">
         GrooveShare
       </h1>
+
       <Login />
       <Logout />
+
       <div className="flex flex-col items-center flex-grow p-4">
-        {/* SearchBar always visible */}
         <SearchBar
           setHasSearched={setHasSearched}
           setSearchTerm={setSearchTerm}
@@ -106,23 +106,18 @@ const App = () => {
           filteredTracks={filteredTracks}
         />
 
-        {/* Display loading indicator */}
         {loading && <p className="text-lg text-white">Loading...</p>}
-
-        {/* Display error message */}
         {error && <p className="text-lg text-red-500">{error}</p>}
 
-        {/* Flexbox container to render TrackList and Playlist side by side */}
         {hasSearched && searchTerm.trim() !== "" && (
           <div className="flex items-start justify-between flex-grow w-full mt-4">
-            {/* TrackList and Playlist will take up more space with adjusted width */}
             <div className="w-3/5 min-h-screen pr-4">
               <TrackList
                 searchTerm={searchTerm}
                 addToPlaylist={addToPlaylist}
                 filteredTracks={filteredTracks}
+                onTrackPlay={(track) => setSelectedTrackUri(track.uri)} // Pass track object
               />
-              {/* Display a message if no tracks are found */}
               {filteredTracks.length === 0 && !loading && (
                 <p className="text-lg text-gray-500">
                   No tracks found for "{searchTerm}".
@@ -133,7 +128,7 @@ const App = () => {
               <Playlist
                 playlist={playlist}
                 setPlaylist={setPlaylist}
-                removeFromPlaylist={removeFromPlaylist} // Pass remove function to Playlist
+                removeFromPlaylist={removeFromPlaylist}
                 playlistTitle={playlistTitle}
                 setPlaylistTitle={setPlaylistTitle}
                 playlistUriArray={playlistUriArray}
@@ -141,6 +136,10 @@ const App = () => {
             </div>
           </div>
         )}
+
+        <div className="w-full mt-8">
+          <WebPlayer token={accessToken} track={selectedTrackUri} />
+        </div>
       </div>
     </div>
   );
