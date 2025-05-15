@@ -18,7 +18,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedTrackUri, setSelectedTrackUri] = useState(null);
-  const accessToken = 'BQDHzM0Ww15GGoLd-2uK7FcTOv0tyyNaRxtA5MOBge6BUW3wyFmr9wyL7E2rcINcIZL3wRq2euCs7vjYjflif7_r_abwrURw9H_xrldojE41aq8-AsR1k6B05hpicr96hLX9dS6xkxrt2YB0QmvlAKUPeymP9MHlQosyrlffuAxTjJ8OZR1cHfqOLejk4xtEiXbbscBziTNLl9iBcDZz6q6nHfkXdfH4_JFa9zJfAvJkA6w';
+  const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
     const args = new URLSearchParams(window.location.search);
@@ -29,6 +29,7 @@ const App = () => {
         if (code) {
           const token = await getToken(code);
           currentToken.save(token);
+          setAccessToken(token.access_token);
 
           const url = new URL(window.location.href);
           url.searchParams.delete("code");
@@ -40,9 +41,11 @@ const App = () => {
           }
           const saved = currentToken.access_token;
           if (saved) {
-            // setAccessToken(saved);
+            setAccessToken(saved);
           }
         }
+
+        console.log("Initial access token:", currentToken.access_token);
       } catch (err) {
         console.error("Authentication error:", err);
         setError("Failed to retrieve or refresh authentication token.");
@@ -50,6 +53,19 @@ const App = () => {
     };
 
     handleAuth();
+
+    const refreshInterval = setInterval(async () => {
+      try {
+        await currentToken.refresh();
+        const newToken = currentToken.access_token;
+        setAccessToken(newToken);
+        console.log("Token auto-refreshed:", newToken);
+      } catch (err) {
+        console.error("Auto-refresh failed:", err);
+      }
+    }, 55 * 60 * 1000); // 55 minutes
+
+    return () => clearInterval(refreshInterval);
   }, []);
 
   const handleSearch = async (tracks) => {
@@ -116,7 +132,7 @@ const App = () => {
                 searchTerm={searchTerm}
                 addToPlaylist={addToPlaylist}
                 filteredTracks={filteredTracks}
-                onTrackPlay={(track) => setSelectedTrackUri(track.uri)} // Pass track object
+                onTrackPlay={(track) => setSelectedTrackUri(track.uri)}
               />
               {filteredTracks.length === 0 && !loading && (
                 <p className="text-lg text-gray-500">

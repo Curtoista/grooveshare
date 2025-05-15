@@ -8,6 +8,10 @@ export default function WebPlayer({ token, track }) {
   const playerRef = useRef(null);
 
   useEffect(() => {
+    console.log('Current Access Token in WebPlayer:', token);
+  }, [token]);
+
+  useEffect(() => {
     const loadSpotifySDK = () => {
       const script = document.createElement('script');
       script.src = 'https://sdk.scdn.co/spotify-player.js';
@@ -28,6 +32,20 @@ export default function WebPlayer({ token, track }) {
 
       setPlayer(newPlayer);
       playerRef.current = newPlayer;
+
+      // Log all errors from the SDK
+      newPlayer.addListener('initialization_error', ({ message }) => {
+        console.error('Initialization Error:', message);
+      });
+      newPlayer.addListener('authentication_error', ({ message }) => {
+        console.error('Authentication Error:', message);
+      });
+      newPlayer.addListener('account_error', ({ message }) => {
+        console.error('Account Error:', message);
+      });
+      newPlayer.addListener('playback_error', ({ message }) => {
+        console.error('Playback Error:', message);
+      });
 
       newPlayer.addListener('ready', ({ device_id }) => {
         console.log('Player is ready with device ID:', device_id);
@@ -78,8 +96,10 @@ export default function WebPlayer({ token, track }) {
       return;
     }
 
+    console.log("Playing track with token:", token); // Add this line
+
     try {
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      const res = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
         body: JSON.stringify({ uris: [uri] }),
         headers: {
@@ -87,6 +107,11 @@ export default function WebPlayer({ token, track }) {
           'Authorization': `Bearer ${token}`,
         },
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('Failed to play track:', res.status, errorData);
+      }
     } catch (error) {
       console.error("Failed to play track:", error);
     }
